@@ -14,8 +14,9 @@ export default function Dashboard() {
   const totalProducts = products.filter((p) => !p.is_kit).length;
   const totalKits = products.filter((p) => p.is_kit).length;
   const totalStock = products.reduce((sum, p) => sum + p.quantity, 0);
-  const totalValue = products.reduce((sum, p) => sum + p.sale_price * p.quantity, 0);
-  const totalCost = products.reduce((sum, p) => sum + p.cost_price * p.quantity, 0);
+  const totalValue = products
+  .filter((p) => !p.is_kit)
+  .reduce((sum, p) => sum + p.sale_price * p.quantity, 0);  const totalCost = products.reduce((sum, p) => sum + p.cost_price * p.quantity, 0);
   const potentialProfit = totalValue - totalCost;
 
   const stats = [
