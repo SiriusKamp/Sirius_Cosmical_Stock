@@ -10,15 +10,24 @@ export default function Dashboard() {
   const { productTypes, isLoading: typesLoading } = useProductTypes();
 
   const isLoading = productsLoading || typesLoading;
-
   const totalProducts = products.filter((p) => !p.is_kit).length;
-  const totalKits = products.filter((p) => p.is_kit).length;
-  const totalStock = products.reduce((sum, p) => sum + p.quantity, 0);
-  const totalValue = products
-  .filter((p) => !p.is_kit)
-  .reduce((sum, p) => sum + p.sale_price * p.quantity, 0);  const totalCost = products.reduce((sum, p) => sum + p.cost_price * p.quantity, 0);
-  const potentialProfit = totalValue - totalCost;
 
+  const totalKits = products.filter((p) => p.is_kit).length;
+  
+  const totalStock = products
+    .filter((p) => !p.is_kit)
+    .reduce((sum, p) => sum + p.quantity, 0);
+  
+  const totalValue = products
+    .filter((p) => !p.is_kit)
+    .reduce((sum, p) => sum + p.sale_price * p.quantity, 0);
+  
+  const totalCost = products
+    .filter((p) => !p.is_kit)
+    .reduce((sum, p) => sum + p.cost_price * p.quantity, 0);
+  
+  const potentialProfit = totalValue - totalCost;
+  
   const stats = [
     {
       label: "Tipos de Produto",
@@ -87,7 +96,25 @@ export default function Dashboard() {
         })}
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      {/* ------------------------- NOVO CARD ADICIONADO ------------------------- */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+
+        {/* Card 1: Valor Total de Custo */}
+        <GradientCard gradient="warm">
+          <div className="flex items-center gap-4">
+            <div className="gradient-bg-warm rounded-xl p-4">
+              <DollarSign className="h-8 w-8 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Valor Total (Custo)</p>
+              <p className="mt-1 text-xl sm:text-2xl font-bold break-all">
+                R$ {totalCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+        </GradientCard>
+
+        {/* Card 2: Valor total em estoque (venda) */}
         <GradientCard gradient="primary">
           <div className="flex items-center gap-4">
             <div className="gradient-bg-primary rounded-xl p-4">
@@ -102,6 +129,7 @@ export default function Dashboard() {
           </div>
         </GradientCard>
 
+        {/* Card 3: Lucro Potencial */}
         <GradientCard gradient="accent">
           <div className="flex items-center gap-4">
             <div className="gradient-bg-accent rounded-xl p-4">
@@ -115,7 +143,9 @@ export default function Dashboard() {
             </div>
           </div>
         </GradientCard>
+
       </div>
+      {/* ----------------------- FIM DO NOVO CARD --------------------------- */}
 
       {products.length > 0 && (
         <div className="mt-8">
